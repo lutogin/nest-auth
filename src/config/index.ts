@@ -1,0 +1,23 @@
+import * as env from 'dotenv-safe';
+
+const {
+  MONGO_HOSTNAME,
+  MONGO_USERNAME,
+  MONGO_PASSWORD,
+  MONGO_PORT,
+  MONGO_DB_NAME,
+  JWT_SECRET,
+} = process.env;
+
+const MONGO_CONNECTION_URL = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB_NAME}`;
+
+
+export {
+  MONGO_HOSTNAME,
+  MONGO_USERNAME,
+  MONGO_PASSWORD,
+  MONGO_PORT,
+  MONGO_DB_NAME,
+  MONGO_CONNECTION_URL,
+  JWT_SECRET,
+}

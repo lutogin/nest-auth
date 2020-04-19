@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  nest-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: "nest-auth"
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    ports:
+    - "3000:3000"
+    - "9229:9229"
+    env_file:
+      - .env
+    environment:
+      - MONGO_HOSTNAME=mongodb
+    volumes:
+    - .:/home/app
+    - /home/app/node_modules
+    restart: unless-stopped
+
+
+  mongodb:
+    image: mongo
+    container_name: "mongodb"
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+#      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+#      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:
