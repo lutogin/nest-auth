@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { MONGO_CONNECTION_URL } from './config';
+import { JWT_SECRET, MONGO_CONNECTION_URL } from './config';
 
 @Module({
   imports: [
@@ -17,4 +18,12 @@ import { MONGO_CONNECTION_URL } from './config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {}
+
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply(UserMiddleware)
+  //     .forRoutes('*');
+  // }
+}

@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, SetMetadata, UseGuards } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { PasswordHasherService } from './auth/password-hasher/password-hasher.service';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from './common/guards/roles.guard';
+import { Roles } from "./common/decorators/roles.decorator";
 
 @Controller('users')
 export class UsersController {
@@ -12,8 +14,16 @@ export class UsersController {
   ) {}
 
   @Post('/signup')
-  async signup(@Body() user: CreateUserDTO) {
-    return this.usersService.signup(user);
+  async signup(@Body() userData: CreateUserDTO) {
+    return this.usersService.signup(userData);
+  }
+
+  @Post('/signup/admin')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'))
+  async signupAdmin(@Request() req, @Body() userData: CreateUserDTO) {
+    return this.usersService.signup(userData);
   }
 
   @Post('/login')
@@ -21,8 +31,8 @@ export class UsersController {
     return this.usersService.login(user);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('/profile')
+  @UseGuards(AuthGuard('jwt'))
   async profile(@Request() req) {
     return req.user;
   }

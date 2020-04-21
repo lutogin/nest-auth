@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginRsp, SignupRsp, User } from './interface/user.interface';
+import {strict} from 'assert';
+import { LoginRsp, SignupRsp, User } from './interfaces/user.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -27,7 +28,7 @@ export class UsersService {
     const encryptedPwd = await this.passwordHasher.hashPassword(password);
     const newUser = this.userModel.create({ email, password: encryptedPwd });
 
-    return newUser.email;
+    return { email: newUser.email, role: newUser.role };
   }
 
   async login(userData: CreateUserDTO): Promise<LoginRsp> {
@@ -44,13 +45,17 @@ export class UsersService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const token = await this.jwtService.signAsync({ id: user._id, email: user.email });
+    const token = await this.jwtService.signAsync({ id: user._id, email: user.email, role: user.role });
 
     return { token };
   }
 
-  async validateUser(id, email) {
+  async validateUser(id: string, email: string) {
     const user = await this.userModel.findOne({ _id: id, email })
     return !!user;
+  }
+
+  async matchRoles(allowedRoles: string[], currentRole: string): Promise<boolean> {
+    return allowedRoles.includes(currentRole);
   }
 }
