@@ -9,7 +9,8 @@ const {
   JWT_SECRET,
 } = process.env;
 
-const MONGO_CONNECTION_URL = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB_NAME}`;
+// const MONGO_CONNECTION_URL = `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB_NAME}`;
+const MONGO_CONNECTION_URL = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}/test?retryWrites=true&w=majority`;
 
 
 export {
